@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+      - test
 
 jobs:
   deploy-main:
@@ -22,19 +22,18 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.MAIN_SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Create directory on MAIN server
-        run: |
-         ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter'
-         ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/backup/ruuter_backup'
-
-        # Skip the following steps if the directory already exists
-        if: steps.check-directory.outputs.check-directory == 'Folder does not exist'
-      
       - name: Check if directory exists on MAIN server
         id: check-directory
         run: |
           ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/main/ruuter ] && echo "Directory exists" || echo "Directory does not exist"'
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/backup/ruuter_backp ] && echo "Directory exists" || echo "Directory does not exist"'
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/backup/ruuter_backup ] && echo "Directory exists" || echo "Directory does not exist"'
+
+      - name: Create directory on MAIN server
+        run: |
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter /opt/etapp2/backup/ruuter_backup'
+
+        # Skip the following steps if the directory already exists
+        if: steps.check-directory.outputs.check-directory == 'Directory does not exist'
 
       - name: Create backup of MAIN server directory
         run: |
@@ -46,4 +45,3 @@ jobs:
       - name: Run Docker Compose on MAIN server
         run: |
           ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cd /opt/etapp2/main/ruuter && docker-compose down && docker-compose up -d --build'
-          
