@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - test
 
 jobs:
   deploy-main:
@@ -25,12 +24,12 @@ jobs:
       - name: Check if directory exists on MAIN server
         id: check-directory
         run: |
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/main/ruuter ] && echo "Directory exists" || echo "Directory does not exist"'
-          
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/main/ruuter ] || echo "Directory does not exist"'
+
       - name: Create directory on MAIN server
         run: |
-          if [[ "${{ steps.check-directory.outputs.check-directory }}" == *"Directory does not exist"* ]]; then
-            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir /opt/etapp2/main/ruuter'
+          if [[ "${{ steps.check-directory.outputs.check-directory }}" == "Directory does not exist" ]]; then
+            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter'
           fi
 
       - name: Push repository to MAIN server
@@ -39,3 +38,4 @@ jobs:
       - name: Run Docker Compose on MAIN server
         run: |
           ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cd /opt/etapp2/main/ruuter && docker-compose down && docker-compose up -d --build'
+
