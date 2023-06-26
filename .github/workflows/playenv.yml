@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - test
+      
 
 jobs:
   deploy-main:
@@ -22,6 +22,23 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.MAIN_SERVER_IP }} >> ~/.ssh/known_hosts
 
+      - name: Create directory on MAIN server
+        run: |
+         ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter /opt/etapp2/backup/ruuter_backup'
+
+        # Skip the following steps if the directory already exists
+        if: steps.check-directory.outputs.check-directory == 'Directory does not exist'
+      
+      - name: Check if directory exists on MAIN server
+        id: check-directory
+        run: |
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/main/ruuter ] && echo "Directory exists" || echo "Directory does not exist"'
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/backup/ruuter_backp ] && echo "Directory exists" || echo "Directory does not exist"'
+
+      - name: Create backup of MAIN server directory
+        run: |
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mv /opt/etapp2/main/ruuter /opt/etapp2/backup/ruuter_backup'
+
       - name: Push repository to MAIN server
         run: rsync -az --exclude='.git/' -e "ssh -i $HOME/.ssh/id_rsa" $GITHUB_WORKSPACE/ ubuntu@${{ secrets.MAIN_SERVER_IP }}:/opt/etapp2/main/ruuter
 
@@ -29,24 +46,3 @@ jobs:
         run: |
           ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cd /opt/etapp2/main/ruuter && docker-compose down && docker-compose up -d --build'
           
-  deploy-test:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/test'  # Only run for the 'dev' branch
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.MAIN_SERVER_IP }} >> ~/.ssh/known_hosts
-
-      - name: Push repository to DEV server
-        run: rsync -az --exclude='.git/' -e "ssh -i $HOME/.ssh/id_rsa" $GITHUB_WORKSPACE/ ubuntu@${{ secrets.MAIN_SERVER_IP }}:/opt/etapp2/test/ruuter
-
-      - name: Run Docker Compose on DEV server
-        run: |
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cd /opt/etapp2/test/ruuter && docker-compose down && docker-compose up -d --build'
