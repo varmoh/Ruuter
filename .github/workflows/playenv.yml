@@ -38,10 +38,3 @@ jobs:
             ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter'
           fi
 
-      - name: Push repository to MAIN server
-        run: rsync -az --exclude='.git/' -e "ssh -i $HOME/.ssh/id_rsa" $GITHUB_WORKSPACE/ ubuntu@${{ secrets.MAIN_SERVER_IP }}:/opt/etapp2/main/ruuter
-
-      - name: Run Docker Compose on MAIN server
-        run: |
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cd /opt/etapp2/main/ruuter && docker-compose down && docker-compose up -d --build'
-
