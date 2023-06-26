@@ -25,7 +25,7 @@ jobs:
       - name: Check if directory exists on MAIN server
         id: check-directory
         run: |
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/main/ruuter ] && echo "Directory exists" || echo "Directory does not exist"'
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/main/ruuter ] && echo "Directory exists" || echo "Directory exist"'
           ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/backup/ruuter_backup ] && echo "Directory exists" || echo "Directory does not exist"'
 
       - name: Create directory on MAIN server
