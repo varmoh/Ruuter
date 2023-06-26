@@ -24,10 +24,11 @@ jobs:
 
       - name: Create directory on MAIN server
         run: |
-         ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter /opt/etapp2/backup/ruuter_backup'
+         ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter'
+         ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/backup/ruuter_backup'
 
         # Skip the following steps if the directory already exists
-        if: steps.check-directory.outputs.check-directory == 'Directory does not exist'
+        if: steps.check-directory.outputs.check-directory == 'Folder does not exist'
       
       - name: Check if directory exists on MAIN server
         id: check-directory
