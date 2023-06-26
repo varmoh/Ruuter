@@ -26,17 +26,12 @@ jobs:
         id: check-directory
         run: |
           ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/main/ruuter ] && echo "Directory exists" || echo "Directory does not exist"'
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '[ -d /opt/etapp2/backup/ruuter_backup ] && echo "Directory exists" || echo "Directory does not exist"'
-
+          
       - name: Create directory on MAIN server
         run: |
           if [[ "${{ steps.check-directory.outputs.check-directory }}" == *"Directory does not exist"* ]]; then
-            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter /opt/etapp2/backup/ruuter_backup'
+            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir /opt/etapp2/main/ruuter'
           fi
-
-      - name: Create backup of MAIN server directory
-        run: |
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mv /opt/etapp2/main/ruuter /opt/etapp2/backup/ruuter_backup'
 
       - name: Push repository to MAIN server
         run: rsync -az --exclude='.git/' -e "ssh -i $HOME/.ssh/id_rsa" $GITHUB_WORKSPACE/ ubuntu@${{ secrets.MAIN_SERVER_IP }}:/opt/etapp2/main/ruuter
