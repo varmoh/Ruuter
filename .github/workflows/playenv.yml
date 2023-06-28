@@ -33,6 +33,9 @@ jobs:
             if [[ "${{ steps.check-directory.outputs.check-directory }}" == *"Directory does not exist"* ]]; then
             ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main'
             fi
+      - name: Create backup of MAIN server directory
+        run: |
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cp -R /opt/etapp2/main/ruuter /opt/etapp2/main/ruuter_backup'
 
 
 
