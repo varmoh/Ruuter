@@ -33,9 +33,9 @@ jobs:
             if [[ "${{ steps.check-directory.outputs.check-directory }}" == *"Directory does not exist"* ]]; then
             ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main'
             fi
-      - name: Run hello
-        run: |
-            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '/opt/etapp2/hello.sh'
+ #     - name: Run hello
+ #       run: |
+ #           ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '/opt/etapp2/hello.sh'
 
  #     - name: Create backup of MAIN server directory
  #       run: |
@@ -45,6 +45,10 @@ jobs:
 
       - name: Push repository to MAIN server
         run: rsync -az --exclude='.git/' -e "ssh -i $HOME/.ssh/id_rsa" $GITHUB_WORKSPACE/ ubuntu@${{ secrets.MAIN_SERVER_IP }}:/opt/etapp2/main/ruuter
+        
+      - name: Run chage
+        run: |
+            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '/opt/etapp2/change.sh'
 
       - name: Run Docker Compose on MAIN server
         run: |
