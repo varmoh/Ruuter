@@ -35,7 +35,7 @@ jobs:
             fi
       - name: Run hello
         run: |
-            /opt/etapp2/hello.sh
+            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} '/opt/etapp2/hello.sh'
 
  #     - name: Create backup of MAIN server directory
  #       run: |
