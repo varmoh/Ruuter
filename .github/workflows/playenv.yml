@@ -36,7 +36,7 @@ jobs:
 
       - name: Create backup of MAIN server directory
         run: |
-          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cp -R /opt/etapp2/main/ruuter /opt/etapp2/main/backup'
+          ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cp -R /opt/etapp2/main /opt/etapp2/main/backup'
 
 
 
