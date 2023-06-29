@@ -35,7 +35,7 @@ jobs:
             fi
       - name: Add line in Dockerfile
         run: |
-          sed -i '28i'EXPOSE 8505 Dockerfile
+          sed -i '31i'EXPOSE 8505 Dockerfile
           git config --local user.email "varmo.helemae@ria.ee"
           git config --local user.name "GitHub Action"
           git commit -m "Update Dockerfile line" Dockerfile
