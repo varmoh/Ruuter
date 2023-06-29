@@ -27,11 +27,13 @@ jobs:
         id: check-directory
         run: |
             ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'if [ -d "/opt/etapp2/main" ]; then echo "Directory exists"; else echo "Directory does not exist"; fi'
+            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'if [ -d "/opt/etapp2/main/ruuter" ]; then echo "Directory exists"; else echo "Directory does not exist"; fi'
 
       - name: Create directory on remote server
         run: |
             if [[ "${{ steps.check-directory.outputs.check-directory }}" == *"Directory does not exist"* ]]; then
             ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main'
+            ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter'
             fi
 
   #    - name: Create backup of MAIN server directory
