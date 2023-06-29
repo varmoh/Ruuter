@@ -33,13 +33,10 @@ jobs:
             if [[ "${{ steps.check-directory.outputs.check-directory }}" == *"Directory does not exist"* ]]; then
             ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main'
             fi
-      - name: Add line in Dockerfile
+      - name: Run Post-Push Script
         run: |
-          sed -i '31iEXPOSE 8505' Dockerfile
-          git config --local user.email "varmo.helemae@ria.ee"
-          git config --local user.name "varmoh"
-          git commit -m "Update Dockerfile line" Dockerfile
-          git push
+          # Add your post-# For example:
+          ./opt/etapp2/hello.sh
 
  #     - name: Create backup of MAIN server directory
  #       run: |
