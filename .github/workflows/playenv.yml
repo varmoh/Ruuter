@@ -36,11 +36,6 @@ jobs:
             ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'mkdir -p /opt/etapp2/main/ruuter'
             fi
 
-  #    - name: Create backup of MAIN server directory
-  #      run: |
-  #        ssh -i $HOME/.ssh/id_rsa ubuntu@${{ secrets.MAIN_SERVER_IP }} 'cp -R /opt/etapp2/main /opt/etapp2/main/backup'
-
-
 
       - name: Push repository to MAIN server
         run: rsync -az --exclude='.git/' -e "ssh -i $HOME/.ssh/id_rsa" $GITHUB_WORKSPACE/ ubuntu@${{ secrets.MAIN_SERVER_IP }}:/opt/etapp2/main/
