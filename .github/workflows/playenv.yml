@@ -3,12 +3,12 @@ name: Deploy Docker Compose
 on:
   push:
     branches:
-      - main
+      - dev-test
 
 jobs:
-  deploy-main:
+  deploy-dev-test:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'  # Only run for the 'main' branch
+    if: github.ref == 'refs/heads/dev-test'  # Only run for the 'main' branch
 
     steps:
       - name: Checkout repository
