@@ -27,7 +27,7 @@ RUN mkdir DSL
 RUN chown ruuter:ruuter /logs
 RUN chown -R ruuter:ruuter /app
 RUN chown -R ruuter:ruuter /DSL
-COPY ./DSL/* /DSL
+COPY ./DSL/ /DSL
 USER ruuter
 
 ENTRYPOINT ["java","-cp","app:app/lib/*","ee.buerokratt.ruuter.RuuterApplication"]
