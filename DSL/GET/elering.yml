@@ -1,0 +1,10 @@
+get_step:
+  call: http.get
+  args:
+    url: "https://dashboard.elering.ee/api/nps/price"    
+  result: elering
+  logging:
+    request:  true
+    response: false
+response:
+  return: ${elering.response.body.data.ee.sort( (a,b) =>  a.price-b.price )[0]}
